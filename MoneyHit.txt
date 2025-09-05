@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyHit 开发指南 - 最终优化版</title>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --glass: rgba(255, 255, 255, 0.1);
+            --blur: blur(10px);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 15px 0 10px;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Consolas', monospace;
+        }
+        
+        .note {
+            background: #e7f3fe;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .requirement {
+            background: #fff4e6;
+            border-left: 5px solid var(--warning);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .effect-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .effect-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .effect-card h4 {
+            margin-bottom: 8px;
+            color: var(--secondary);
+        }
+        
+        .decision {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: #f2f2f2;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--dark);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MoneyHit 开发指南 - 最终优化版</h1>
+            <p class="subtitle">为Mac mini M4芯片优化的短视频二创工具开发指南</p>
+            <button class="btn" onclick="downloadHTML()">下载本文档</button>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>项目概述</h2>
+                <p>开发一个名为 "MoneyHit" 的桌面应用程序，集成 AI 文案生成、语音合成和智能视频编辑功能，专门用于短视频二创带货。</p>
+                <div class="note">
+                    <strong>核心要求：</strong> 支持多模型并行、丰富的视觉效果库、M4芯片深度优化、本地网络环境优先、智能素材管理和节奏分析。
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>核心功能需求</h2>
+                
+                <h3>1. 文案与音轨生成模块</h3>
+                <ul>
+                    <li>提供两种文案生成方式（可单选、多选或都不选）：
+                        <ul>
+                            <li>根据产品名称和固定提示词生成</li>
+                            <li>根据初始文案和固定提示词生成</li>
+                        </ul>
+                    </li>
+                    <li>两种方式都使用DeepSeek和豆包API，但使用不同的固定提示词</li>
+                    <li>允许用户直接输入文案，跳过生成步骤</li>
+                    <li><strong>多模型并行调用</strong> DeepSeek、豆包、通义千问等API生成文案</li>
+                    <li>文案编辑与整合界面</li>
+                    <li>通过网络 API 调用 Windows 电脑上的 CosyVoice 生成音频</li>
+                </ul>
+                
+                <h3>2. 智能视频二创模块</h3>
+                <ul>
+                    <li>通过抖音链接下载视频素材</li>
+                    <li>本地上传素材支持</li>
+                    <li>AI 视频分析（人脸检测、语义匹配）</li>
+                    <li>可视化时间轴编辑界面</li>
+                    <li><strong>去除原素材声音</strong>，使用CosyVoice生成的音频作为最终音轨</li>
+                    <li>丰富的视觉效果库（转场、滤镜、贴纸、蒙版）</li>
+                    <li>生成多个版本视频作为备选</li>
+                    <li><strong>新增动画、特效和音效库</strong>（针对中老年女性群体优化）</li>
+                </ul>
+                
+                <h3>3. 导出模块</h3>
+                <ul>
+                    <li>导出最终 MP4 视频</li>
+                    <li>导出备选视频版本</li>
+                    <li>导出剪映草稿文件 (.draft)</li>
+                    <li>优化的去字幕后期处理功能</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>技术决策与优化方案</h2>
+                
+                <div class="decision">
+                    <h3>去字幕方案决策（已更新）</h3>
+                    <p>经过对比分析，我们选择 <strong>OpenCV + PaddleOCR + VidGear 方案</strong> 作为主要去字幕方案：</p>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>方案</th>
+                            <th>中文识别精度</th>
+                            <th>处理速度</th>
+                            <th>资源消耗</th>
+                            <th>M4芯片优化</th>
+                        </tr>
+                        <tr>
+                            <td>OpenCV + Tesseract</td>
+                            <td>一般</td>
+                            <td>较慢</td>
+                            <td>低</td>
+                            <td>无特别优化</td>
+                        </tr>
+                        <tr>
+                            <td>OpenCV + PaddleOCR + VidGear</td>
+                            <td>优秀</td>
+                            <td>较快</td>
+                            <td>中等</td>
+                            <td>支持GPU加速</td>
+                        </tr>
+                    </table>
+                    
+                    <ul>
+                        <li><strong>中文识别优势</strong>：PaddleOCR针对中文优化，准确率远高于Tesseract</li>
+                        <li><strong>处理速度优势</strong>：VidGear利用多线程提高处理效率</li>
+                        <li><strong>硬件加速</strong>：支持M4芯片GPU加速，提升处理性能</li>
+                        <li><strong>抗干扰能力</strong>：对复杂背景和艺术字体有更好的处理能力</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>AI视频分析方案决策</h3>
+                    <p>经过对比分析，我们选择 <strong>硅基流动/魔搭平台的视频理解大模型</strong> 作为主要分析方案：</p>
+                    <ul>
+                        <li><strong>语义理解更强</strong>：专门针对视频内容训练，理解更准确</li>
+                        <li><strong>情感分析更优</strong>：能更好地捕捉视频中的情感元素</li>
+                        <li><strong>场景适配更好</strong>：更适合中文短视频场景</li>
+                        <li><strong>集成CLIP作为本地备选</strong>：当网络不稳定时使用本地CLIP模型</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>智能素材管理系统</h3>
+                    <p>实现智能素材管理与语义标签系统：</p>
+                    <ul>
+                        <li><strong>自动标签</strong>：上传素材自动生成语义标签</li>
+                        <li><strong>智能搜索</strong>：用自然语言查找素材</li>
+                        <li><strong>语义匹配</strong>：根据文案内容推荐合适素材</li>
+                        <li><strong>分类管理</strong>：按场景、情感、颜色自动分类</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>智能节奏分析系统</h3>
+                    <p>实现智能节奏与剪辑点分析：</p>
+                    <ul>
+                        <li><strong>文案节奏分析</strong>：分析文案情感强度和重点</li>
+                        <li><strong>智能剪辑点</strong>：根据文案重音自动设置剪辑节奏</li>
+                        <li><strong>时长优化</strong>：重要内容自动延长显示时间</li>
+                        <li><strong>内容匹配</strong>：视频画面与文案内容精准同步</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>技术实现要点</h2>
+                
+                <h3>环境配置（已更新）</h3>
+                <div class="code-block">
+# 核心依赖<br>
+moviepy==1.0.3<br>
+opencv-python==4.9.0.80<br>
+paddlepaddle==2.5.0  # PaddlePaddle深度学习框架<br>
+paddleocr==2.7.0     # PaddleOCR文字识别<br>
+vidgear==0.2.5       # 视频处理加速库<br>
+requests==2.31.0<br>
+PyQt6==6.6.1<br>
+yt-dlp==2023.11.16<br>
+numpy==1.24.3<br>
+concurrent.futures # 多线程并行<br>
+transformers # CLIP模型备用
+                </div>
+                
+                <h3>M4芯片深度优化</h3>
+                <ul>
+                    <li>使用为 Apple Silicon 编译的 Python 库</li>
+                    <li>FFmpeg 启用 Metal 加速: <code>-hwaccel videotoolbox -vcodec h264_videotoolbox</code></li>
+                    <li>多线程处理: 使用 concurrent.futures 实现模型并行调用和视频处理并行化</li>
+                    <li>内存优化: 利用 M4 芯片的统一内存架构，减少数据拷贝</li>
+                </ul>
+                
+                <h3>高级去字幕功能实现 (OpenCV + PaddleOCR + VidGear)</h3>
+                <div class="code-block">
+import cv2<br>
+import numpy as np<br>
+from paddleocr import PaddleOCR<br>
+from vidgear.gears import WriteGear<br>
+<br>
+class AdvancedSubtitleRemover:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, use_gpu=True):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""初始化高级去字幕器"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.ocr = PaddleOCR(use_angle_cls=True, lang="ch", <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;use_gpu=use_gpu, show_log=False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.writer = None<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def remove_subtitles_advanced(self, input_path, output_path):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""使用PaddleOCR+VidGear的高级去字幕方法"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cap = cv2.VideoCapture(input_path)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;fps = cap.get(cv2.CAP_PROP_FPS)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 初始化VidGear写入器（带硬件加速）<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.writer = WriteGear(output_path, compression_mode=True,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logging=False, **self.get_output_params(fps, width, height))<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frame_count = 0<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batch_size = 10  # 批量处理提高效率<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while True:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frames = []<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for _ in range(batch_size):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ret, frame = cap.read()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if not ret:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frames.append(frame)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if not frames:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 批量处理帧<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frames = self.process_frame_batch(frames)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 写入处理后的帧<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for frame in processed_frames:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.writer.write(frame)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frame_count += 1<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 进度显示（可选）<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if frame_count % 30 == 0:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f"已处理 {frame_count} 帧...")<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cap.release()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.writer.close()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return True<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def process_frame_batch(self, frames):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""批量处理帧以提高效率"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frames = []<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for frame in frames:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 使用PaddleOCR检测文本<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ocr_result = self.ocr.ocr(frame, cls=True)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if ocr_result and ocr_result[0]:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 处理检测到的文本区域<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frame = self.remove_detected_text(frame, ocr_result[0])<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frames.append(processed_frame)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frames.append(frame)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return processed_frames<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def remove_detected_text(self, frame, ocr_results):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""去除检测到的文本区域"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frame = frame.copy()<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for result in ocr_results:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_box = result[0]  # 文本框坐标<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text = result[1][0]   # 识别到的文本<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;confidence = result[1][1]  # 置信度<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if confidence > 0.3:  # 置信度阈值<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 获取文本区域边界框<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;points = np.array(text_box, dtype=np.int32)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_min, y_min = np.min(points, axis=0)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_max, y_max = np.max(points, axis=0)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 扩展区域以确保完全覆盖文本<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expand = 5  # 扩展像素<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_min = max(0, x_min - expand)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_min = max(0, y_min - expand)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_max = min(frame.shape[1], x_max + expand)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y_max = min(frame.shape[0], y_max + expand)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 使用智能修复（根据周围像素）<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed_frame = self.smart_inpaint(processed_frame, <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_min, y_min, x_max, y_max)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return processed_frame<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def smart_inpaint(self, frame, x_min, y_min, x_max, y_max):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""智能修复文本区域"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 提取文本区域<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text_region = frame[y_min:y_max, x_min:x_max]<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if text_region.size == 0:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return frame<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 方法1：使用邻近区域平均颜色填充（简单快速）<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (y_min > 10 and frame.shape[0] - y_max > 10 and <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x_min > 10 and frame.shape[1] - x_max > 10):<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# 获取周围区域的颜色特征<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top_region = frame[max(0, y_min-10):y_min, x_min:x_max]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bottom_region = frame[y_max:min(frame.shape[0], y_max+10), x_min:x_max]<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if top_region.size > 0 and bottom_region.size > 0:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avg_color = np.concatenate([top_region, bottom_region]).mean(axis=(0, 1))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;frame[y_min:y_max, x_min:x_max] = avg_color<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return frame<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;def get_output_params(self, fps, width, height):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"""获取输出参数配置"""<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-input_framerate": fps,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-vcodec": "h264_videotoolbox",  # M4芯片硬件编码<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-preset": "fast",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-crf": 23,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-pix_fmt": "yuv420p",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"-vf": f"scale={width}:{height}"  # 保持原始分辨率<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+                </div>
+            </div>
+            
+            <div class="requirement">
+                <h3>特别要求</h3>
+                <ul>
+                    <li>提供直观的图形界面，适合非技术用户</li>
+                    <li>支持用户自主配置各大模型平台的 API Key</li>
+                    <li>可视化字幕区域选择功能</li>
+                    <li>充分利用 M4 芯片的性能优势 (Metal加速、多线程)</li>
+                    <li>丰富的视觉效果库，针对中老年女性群体优化</li>
+                    <li>最终打包为可在本地运行的应用程序</li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 MoneyHit 开发指南 - 最终优化版 | 为 Trae 开发准备</p>
+        </footer>
+    </div>
+
+    <script>
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'moneyhit_developer_guide_final_optimized.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
