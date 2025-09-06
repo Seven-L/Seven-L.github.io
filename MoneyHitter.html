@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyHitter 开发指南 2.0</title>
+    <style>
+        :root {
+            --primary: #4285F4;
+            --secondary: #34A853;
+            --accent: #EA4335;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #FBBC05;
+            --warning: #EA4335;
+            --glass: rgba(255, 255, 255, 0.1);
+            --blur: blur(10px);
+            --gradient: linear-gradient(135deg, #4285F4 0%, #34A853 50%, #FBBC05 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: var(--gradient);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            backdrop-filter: var(--blur);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent);
+            font-weight: 600;
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 20px 0 15px;
+            font-weight: 500;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 12px;
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.4rem;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .note {
+            background: #e7f3fe;
+            border-left: 5px solid var(--primary);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .requirement {
+            background: #fff4e6;
+            border-left: 5px solid var(--warning);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .effect-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .effect-card {
+            background: #f8f9fa;
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 5px solid var(--accent);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease;
+        }
+        
+        .effect-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .effect-card h4 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+        
+        .decision {
+            background: #d4edda;
+            border-left: 5px solid #28a745;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 14px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: #f2f2f2;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .ui-preview {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: var(--dark);
+            color: white;
+        }
+        
+        .platform-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .workflow-step {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--success);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .feature-highlight {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-highlight h3 {
+            color: white;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .architecture-diagram {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 25px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MoneyHitter 开发指南 2.0</h1>
+            <p class="subtitle">专为中老年女性短视频二创带货优化的智能创作平台</p>
+            <button class="btn" onclick="downloadHTML()">下载完整开发指南</button>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>项目概述</h2>
+                <p>开发名为 "MoneyHitter" 的桌面应用程序，集成 AI 文案生成、语音合成和智能视频编辑功能，专门用于短视频二创带货，目标用户为中老年女性群体。</p>
+                <div class="note">
+                    <strong>核心要求：</strong> 支持多模型并行、丰富的视觉效果库、M4芯片深度优化、本地网络环境优先、智能素材管理和节奏分析。
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>系统架构</h2>
+                <div class="architecture-diagram">
+                    <h3>MoneyHitter 系统架构图</h3>
+                    <div style="background:#f5f5f5; padding:30px; border-radius:8px; margin:20px 0;">
+                        <p style="font-style:italic; color:#666;">[此处应放置系统架构图]</p>
+                        <p>架构说明：前端使用PyQt6实现桌面UI，后端使用Python处理核心逻辑，通过多线程技术并行处理多个大模型调用，利用M4芯片的NPU进行本地模型推理。</p>
+                    </div>
+                </div>
+                
+                <h3>技术栈选择</h3>
+                <ul>
+                    <li><strong>前端框架</strong>: PyQt6 - 提供跨平台桌面应用支持</li>
+                    <li><strong>后端语言</strong>: Python 3.9+ - 丰富的AI库生态系统</li>
+                    <li><strong>视频处理</strong>: OpenCV, MoviePy, VidGear - 专业视频处理库</li>
+                    <li><strong>AI模型</strong>: PaddleOCR, Transformers, Qwen2-1.5B-Instruct - 本地AI能力</li>
+                    <li><strong>并行处理</strong>: Concurrent.Futures, Asyncio - 多模型并行调用</li>
+                    <li><strong>硬件加速</strong>: Metal Performance Shaders - M4芯片优化</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>完整工作流程</h2>
+                
+                <div class="workflow-step">
+                    <h3><span class="step-number">1</span>文案与音频生成</h3>
+                    <ul>
+                        <li>提供两种文案生成方式（可单选、多选或都不选）：
+                            <ul>
+                                <li>根据产品名称和固定提示词生成（使用DeepSeek和豆包API）</li>
+                                <li>根据初始文案和固定提示词生成（使用DeepSeek和豆包API）</li>
+                            </ul>
+                        </li>
+                        <li>支持用户直接输入文案，跳过生成步骤</li>
+                        <li>多模型并行调用生成文案（DeepSeek、豆包、通义千问、火山引擎等）</li>
+                        <li>集成本地Qwen2-1.5B-Instruct模型进行文案评分与推荐</li>
+                        <li>支持本地上传已精修的音频文件作为最终音轨</li>
+                        <li>最终使用整合后的文案作为字幕参考，上传的音频作为最终音轨</li>
+                    </ul>
+                </div>
+                
+                <div class="workflow-step">
+                    <h3><span class="step-number">2</span>视频处理与二创</h3>
+                    <ul>
+                        <li>通过抖音分享链接直接下载视频素材</li>
+                        <li>本地上传素材支持，形成素材库</li>
+                        <li>AI视频分析（语义匹配、情感分析）</li>
+                        <li>可视化时间轴编辑界面</li>
+                        <li>去除原素材声音，使用上传的音频作为最终音轨</li>
+                        <li>去除视频字幕（OpenCV + PaddleOCR + VidGear方案，保留video-subtitle-remover作为备选）</li>
+                        <li>智能横屏转竖屏与核心焦点追踪功能</li>
+                        <li>基于音频节奏的智能剪辑与特效自动匹配</li>
+                        <li>丰富的视觉效果库（转场、滤镜、贴纸、蒙版、动画、音效、特效）</li>
+                        <li>根据文案语义、音频时间戳和情感表达筛选视频片段</li>
+                        <li>摒弃所有带人物正面、侧面的视频片段</li>
+                        <li>生成多个版本视频作为备选，支持片段替换</li>
+                    </ul>
+                </div>
+                
+                <div class="workflow-step">
+                    <h3><span class="step-number">3</span>导出与精修</h3>
+                    <ul>
+                        <li>AI智能封面与高光时刻自动生成</li>
+                        <li>导出最终MP4视频</li>
+                        <li>导出备选视频版本</li>
+                        <li>导出剪映草稿文件(.draft)支持分层导出和标记导出</li>
+                        <li>字幕设置（可选是否生成字幕）：
+                            <ul>
+                                <li>字体：预设10种常规字体</li>
+                                <li>位置：底部、中部、顶部</li>
+                                <li>颜色：赤橙黄绿青蓝紫黑白</li>
+                                <li>字体大小：10-100号自主选择</li>
+                                <li>描边大小：0-10号自主选择</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="feature-highlight">
+                <h3>核心增强功能</h3>
+                <ul>
+                    <li>本地Qwen2-1.5B-Instruct模型辅助文案评分与推荐</li>
+                    <li>音频文件本地上传支持，确保发音准确性和质量控制</li>
+                    <li>智能横屏转竖屏与核心焦点追踪</li>
+                    <li>基于音频节奏的智能剪辑与特效匹配</li>
+                    <li>语义-画面智能匹配素材库</li>
+                    <li>中老年女性偏好效果组合包与一键应用</li>
+                    <li>AI智能封面与高光时刻自动生成</li>
+                    <li>效果组合-A/B测试数据反馈闭环</li>
+                    <li>离线音效与字体包管理</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>核心功能需求</h2>
+                
+                <h3>1. 文案与音轨生成模块</h3>
+                <ul>
+                    <li>多API平台支持：
+                        <div class="platform-badges">
+                            <span class="badge">DeepSeek</span>
+                            <span class="badge">豆包</span>
+                            <span class="badge">通义千问</span>
+                            <span class="badge">火山引擎</span>
+                            <span class="badge">硅基流动</span>
+                            <span class="badge">魔搭</span>
+                        </div>
+                    </li>
+                    <li>API Key自主配置界面</li>
+                    <li>多模型并行调用，启用多线程加速</li>
+                    <li>固定提示词管理（不同生成方式使用不同提示词）</li>
+                    <li>本地Qwen2-1.5B-Instruct模型集成，用于文案评分与推荐</li>
+                    <li>文案整合编辑界面</li>
+                    <li>音频文件本地上传功能，支持多种音频格式</li>
+                </ul>
+                
+                <h3>2. 智能视频二创模块</h3>
+                <ul>
+                    <li>抖音视频链接下载功能</li>
+                    <li>本地上传与管理素材库</li>
+                    <li>AI视频语义分析（使用硅基流动/魔搭平台视频理解大模型，CLIP作为本地备选）</li>
+                    <li>可视化时间轴编辑界面</li>
+                    <li>高级去字幕功能（OpenCV + PaddleOCR + VidGear方案）</li>
+                    <li>智能素材管理与语义标签系统</li>
+                    <li>智能节奏与剪辑点分析系统</li>
+                    <li>丰富的视觉效果库（各10种以上）：
+                        <div class="effect-grid">
+                            <div class="effect-card">
+                                <h4>转场效果</h4>
+                                <p>淡入淡出、滑动、缩放、旋转等10种以上</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>滤镜效果</h4>
+                                <p>复古、清新、暖色、冷色等10种以上</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>贴纸库</h4>
+                                <p>花朵、爱心、节日元素等中老年女性喜好贴纸</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>蒙版效果</h4>
+                                <p>圆形、心形、星形等10种以上蒙版</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>动画效果</h4>
+                                <p>弹入、弹出、抖动等10种以上动画</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>音效库</h4>
+                                <p>掌声、笑声、自然声等10种以上音效</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>特效库</h4>
+                                <p>模糊、闪烁、老电影等10种以上特效</p>
+                            </div>
+                            <div class="effect-card">
+                                <h4>变速功能</h4>
+                                <p>0.8-1.2倍速智能随机选择</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>多版本视频生成与备选片段管理</li>
+                </ul>
+                
+                <h3>3. 导出模块</h3>
+                <ul>
+                    <li>导出最终MP4视频（支持多种分辨率）</li>
+                    <li>导出备选视频版本</li>
+                    <li>导出剪映草稿文件(.draft)</li>
+                    <li>可配置的字幕生成功能</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>技术实现方案</h2>
+                
+                <div class="decision">
+                    <h3>去字幕方案</h3>
+                    <p>使用 <strong>OpenCV + PaddleOCR + VidGear 方案</strong> 作为主要去字幕方案，保留video-subtitle-remover作为备选：</p>
+                    
+                    <table class="comparison-table">
+                        <tr>
+                            <th>方案</th>
+                            <th>中文识别精度</th>
+                            <th>处理速度</th>
+                            <th>资源消耗</th>
+                            <th>M4芯片优化</th>
+                        </tr>
+                        <tr>
+                            <td>OpenCV + PaddleOCR + VidGear</td>
+                            <td>优秀</td>
+                            <td>较快</td>
+                            <td>中等</td>
+                            <td>支持GPU加速</td>
+                        </tr>
+                        <tr>
+                            <td>video-subtitle-remover</td>
+                            <td>良好</td>
+                            <td>一般</td>
+                            <td>较高</td>
+                            <td>有限支持</td>
+                        </tr>
+                    </table>
+                    
+                    <ul>
+                        <li><strong>中文识别优势</strong>：PaddleOCR针对中文优化，准确率较高</li>
+                        <li><strong>处理速度优势</strong>：VidGear利用多线程提高处理效率</li>
+                        <li><strong>硬件加速</strong>：支持M4芯片GPU加速，提升处理性能</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>AI视频分析方案</h3>
+                    <p>使用 <strong>硅基流动/魔搭平台的视频理解大模型</strong> 作为主要分析方案，CLIP作为本地备选：</p>
+                    <ul>
+                        <li><strong>语义理解</strong>：专门针对视频内容训练，理解更准确</li>
+                        <li><strong>情感分析</strong>：能更好地捕捉视频中的情感元素</li>
+                        <li><strong>场景适配</strong>：更适合中文短视频场景</li>
+                        <li><strong>本地备选</strong>：当网络不稳定时使用本地CLIP模型</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>智能素材管理系统</h3>
+                    <p>实现智能素材管理与语义标签系统：</p>
+                    <ul>
+                        <li><strong>自动标签</strong>：上传素材自动生成语义标签</li>
+                        <li><strong>智能搜索</strong>：用自然语言查找素材</li>
+                        <li><strong>语义匹配</strong>：根据文案内容推荐合适素材</li>
+                        <li><strong>分类管理</strong>：按场景、情感、颜色自动分类</li>
+                    </ul>
+                </div>
+                
+                <div class="decision">
+                    <h3>智能节奏分析系统</h3>
+                    <p>实现智能节奏与剪辑点分析：</p>
+                    <ul>
+                        <li><strong>文案节奏分析</strong>：分析文案情感强度和重点</li>
+                        <li><strong>智能剪辑点</strong>：根据文案重音自动设置剪辑节奏</li>
+                        <li><strong>时长优化</strong>：重要内容自动延长显示时间</li>
+                        <li><strong>内容匹配</strong>：视频画面与文案内容精准同步</li>
+                    </ul>
+                </div>
+                
+                <h3>环境配置与依赖</h3>
+                <div class="code-block">
+# 核心依赖
+python==3.9.13
+pyqt6==6.6.1
+moviepy==1.0.3
+opencv-python==4.9.0.80
+paddlepaddle==2.5.0
+paddleocr==2.7.0
+vidgear==0.2.5
+requests==2.31.0
+yt-dlp==2023.11.16
+numpy==1.24.3
+concurrent.futures
+transformers==4.37.0
+qianfan==0.3.0
+ffmpeg-python==0.2.0
+qwen2==1.5b-instruct
+
+# M4芯片优化依赖
+apple-accelerate==1.0.0
+metal-performance-shaders==1.0.0
+coremltools==7.0.0
+
+# 可选依赖
+video-subtitle-remover==0.1.2
+clip-anytorch==1.0.0
+                </div>
+                
+                <h3>M4芯片深度优化</h3>
+                <ul>
+                    <li>使用为Apple Silicon编译的Python库</li>
+                    <li>FFmpeg启用Metal加速: <code>-hwaccel videotoolbox -vcodec h264_videotoolbox</code></li>
+                    <li>多线程处理: 使用concurrent.futures实现模型并行调用和视频处理并行化</li>
+                    <li>内存优化: 利用M4芯片的统一内存架构，减少数据拷贝</li>
+                    <li>NPU加速: 使用Core ML和Metal Performance Shaders加速本地模型推理</li>
+                </ul>
+                
+                <h3>高级去字幕功能实现</h3>
+                <div class="code-block">
+import cv2
+import numpy as np
+from paddleocr import PaddleOCR
+from vidgear.gears import WriteGear
+import concurrent.futures
+
+class AdvancedSubtitleRemover:
+    def __init__(self, use_gpu=True):
+        self.ocr = PaddleOCR(use_angle_cls=True, lang="ch", 
+                            use_gpu=use_gpu, show_log=False)
+        self.writer = None
+
+    def remove_subtitles_advanced(self, input_path, output_path):
+        cap = cv2.VideoCapture(input_path)
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        self.writer = WriteGear(output_path, compression_mode=True,
+                                logging=False, **self.get_output_params(fps, width, height))
+
+        frame_count = 0
+        batch_size = 10
+
+        while True:
+            frames = []
+            for _ in range(batch_size):
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                frames.append(frame)
+
+            if not frames:
+                break
+
+            processed_frames = self.process_frame_batch(frames)
+
+            for frame in processed_frames:
+                self.writer.write(frame)
+                frame_count += 1
+
+                if frame_count % 30 == 0:
+                    print(f"已处理 {frame_count} 帧...")
+
+        cap.release()
+        self.writer.close()
+        return True
+
+    def process_frame_batch(self, frames):
+        processed_frames = []
+
+        for frame in frames:
+            ocr_result = self.ocr.ocr(frame, cls=True)
+
+            if ocr_result and ocr_result[0]:
+                processed_frame = self.remove_detected_text(frame, ocr_result[0])
+                processed_frames.append(processed_frame)
+            else:
+                processed_frames.append(frame)
+
+        return processed_frames
+
+    def remove_detected_text(self, frame, ocr_results):
+        processed_frame = frame.copy()
+
+        for result in ocr_results:
+            text_box = result[0]
+            text = result[1][0]
+            confidence = result[1][1]
+
+            if confidence > 0.3:
+                points = np.array(text_box, dtype=np.int32)
+                x_min, y_min = np.min(points, axis=0)
+                x_max, y_max = np.max(points, axis=0)
+
+                expand = 5
+                x_min = max(0, x_min - expand)
+                y_min = max(0, y_min - expand)
+                x_max = min(frame.shape[1], x_max + expand)
+                y_max = min(frame.shape[0], y_max + expand)
+
+                processed_frame = self.smart_inpaint(processed_frame, 
+                                                    x_min, y_min, x_max, y_max)
+
+        return processed_frame
+
+    def smart_inpaint(self, frame, x_min, y_min, x_max, y_max):
+        text_region = frame[y_min:y_max, x_min:x_max]
+
+        if text_region.size == 0:
+            return frame
+
+        if (y_min > 10 and frame.shape[0] - y_max > 10 and 
+            x_min > 10 and frame.shape[1] - x_max > 10):
+
+            top_region = frame[max(0, y_min-10):y_min, x_min:x_max]
+            bottom_region = frame[y_max:min(frame.shape[0], y_max+10), x_min:x_max]
+
+            if top_region.size > 0 and bottom_region.size > 0:
+                avg_color = np.concatenate([top_region, bottom_region]).mean(axis=(0, 1))
+                frame[y_min:y_max, x_min:x_max] = avg_color
+
+        return frame
+
+    def get_output_params(self, fps, width, height):
+        return {
+            "-input_framerate": fps,
+            "-vcodec": "h264_videotoolbox",
+            "-preset": "fast",
+            "-crf": 23,
+            "-pix_fmt": "yuv420p",
+            "-vf": f"scale={width}:{height}"
+        }
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>UI界面设计</h2>
+                
+                <div class="ui-preview">
+                    <h3>设计理念</h3>
+                    <p>采用苹果公司软玻璃渐变风格，以Google logo颜色（蓝、绿、黄、红）为渐变主色调，参考MoneyPrinterTurbo的排版布局。</p>
+                    
+                    <h3>界面布局要求</h3>
+                    <ul>
+                        <li>左侧导航栏：首页、使用说明、模板库、素材库、大模型库</li>
+                        <li>中央工作区：文案及音频生成、视频编辑预览区域</li>
+                        <li>右侧控制面板：效果预设、参数调整、导出选项</li>
+                        <li>底部状态栏：处理进度、系统状态、提示信息</li>
+                    </ul>
+                    
+                    <h3>主要界面组件</h3>
+                    <ul>
+                        <li><strong>文案生成区域</strong>：产品名称输入、原文案输入、模型选择、提示词输入</li>
+                        <li><strong>音频上传区域</strong>：音频文件选择、预览播放、时长显示</li>
+                        <li><strong>视频编辑区域</strong>：时间轴、视频预览、效果拖拽区</li>
+                        <li><strong>效果库面板</strong>：转场、滤镜、贴纸、蒙版、动画、音效、特效分类展示</li>
+                        <li><strong>导出设置面板</strong>：视频格式、分辨率、字幕设置、剪映草稿导出</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="requirement">
+                <h3>特别要求</h3>
+                <ul>
+                    <li>提供直观的图形界面，适合非技术用户操作</li>
+                    <li>支持用户自主配置各大模型平台的API Key</li>
+                    <li>可视化字幕区域选择功能</li>
+                    <li>充分利用M4芯片的性能优势（Metal加速、多线程）</li>
+                    <li>丰富的视觉效果库，针对中老年女性群体优化</li>
+                    <li>最终打包为可在本地运行的应用程序（.app格式）</li>
+                    <li>支持本地网络环境使用，减少对外部网络的依赖</li>
+                    <li>免费部署，除大模型token外不产生额外费用</li>
+                    <li>提供"一键成片"与"深度自定义"双模式工作流</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>部署与打包</h2>
+                
+                <h3>环境要求</h3>
+                <ul>
+                    <li>macOS 13.0+ (Ventura)</li>
+                    <li>Mac mini with M4 chip</li>
+                    <li>16GB+ 统一内存</li>
+                    <li>Python 3.9+</li>
+                    <li>FFmpeg with Metal acceleration</li>
+                </ul>
+                
+                <h3>安装步骤</h3>
+                <div class="code-block">
+# 1. 创建虚拟环境
+python3 -m venv moneyhitter-env
+source moneyhitter-env/bin/activate
+
+# 2. 安装依赖
+pip install -r requirements.txt
+
+# 3. 安装FFmpeg with Metal支持
+brew install ffmpeg --with-videotoolbox
+
+# 4. 下载本地模型
+python -c "from transformers import AutoModel; AutoModel.from_pretrained('Qwen/Qwen2-1.5B-Instruct')"
+
+# 5. 运行应用
+python main.py
+                </div>
+                
+                <h3>打包发布</h3>
+                <div class="code-block">
+# 使用PyInstaller打包为独立应用
+pip install pyinstaller
+
+# 打包命令
+pyinstaller --name="MoneyHitter" \
+            --windowed \
+            --icon="assets/icon.icns" \
+            --add-data="models:models" \
+            --add-data="effects:effects" \
+            --add-data="fonts:fonts" \
+            --osx-bundle-identifier="com.moneyhitter.app" \
+            main.py
+
+# 生成的应用位于dist/MoneyHitter.app
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 MoneyHitter 开发指南 2.0 | 为Trae开发准备 | 专为中老年女性短视频二创带货优化</p>
+        </footer>
+    </div>
+
+    <script>
+        function downloadHTML() {
+            const htmlContent = document.documentElement.outerHTML;
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'moneyhitter_developer_guide_v2.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
