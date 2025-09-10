@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoneyHitter 2.0 开发指南 V2</title>
+    <style>
+        :root {
+            --primary: #4285F4;
+            --secondary: #34A853;
+            --accent: #EA4335;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #FBBC05;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #4285F4 0%, #34A853 50%, #FBBC05 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4285F4 0%, #34A853 50%, #FBBC05 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        h3 {
+            color: var(--secondary);
+            margin: 15px 0 10px;
+        }
+        
+        ul {
+            list-style-type: none;
+            margin-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 25px;
+        }
+        
+        li:before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.9rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .optimization-badge {
+            background: linear-gradient(135deg, #FF9FF3 0%, #FEA47F 100%);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+        
+        .note {
+            background: #e7f3fe;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .data-panel {
+            background: #f0f7ff;
+            border: 1px solid #cce5ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: #e6f2ff;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: var(--dark);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MoneyHitter 2.0 开发指南 V2</h1>
+            <p class="subtitle">专为中老年女性短视频二创带货优化的智能创作平台</p>
+        </header>
+        
+        <div class="content">
+            <div class="section">
+                <h2>项目概述</h2>
+                <p>开发名为 "MoneyHitter" 的桌面应用程序，集成 AI 文案生成、语音合成和智能视频编辑功能，专门用于短视频二创带货，目标用户为中老年女性群体。</p>
+                <div class="note">
+                    <strong>核心要求：</strong> 支持多模型并行、丰富的视觉效果库、M4芯片深度优化、本地网络环境优先、智能素材管理和节奏分析。
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>系统架构</h2>
+                <h3>技术栈选择</h3>
+                <ul>
+                    <li><strong>前端框架</strong>: PyQt6 - 提供跨平台桌面应用支持</li>
+                    <li><strong>后端语言</strong>: Python 3.9+ - 丰富的AI库生态系统</li>
+                    <li><strong>视频处理</strong>: OpenCV, MoviePy, VidGear - 专业视频处理库</li>
+                    <li><strong>AI模型</strong>: PaddleOCR, Transformers, Qwen2-1.5B-Instruct, FastVLM - 本地AI能力</li>
+                    <li><strong>并行处理</strong>: Concurrent.Futures, Asyncio - 多模型并行调用</li>
+                    <li><strong>硬件加速</strong>: Metal Performance Shaders - M4芯片优化</li>
+                    <li><strong>背景音乐分析</strong>: Librosa - 音频特征提取与分析</li>
+                    <li><strong>数据存储</strong>: SQLite - 轻量级数据存储与分析</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>性能优化架构 <span class="optimization-badge">优化</span></h2>
+                
+                <h3>模块化按需加载系统</h3>
+                <div class="code-block">
+class ModularLoader:
+    def __init__(self):
+        self.active_modules = {}
+        
+    def load_module(self, module_name):
+        if module_name in self.active_modules:
+            return self.active_modules[module_name]
+        
+        if self.get_memory_pressure() > 0.7:
+            self.unload_least_used_module()
+        
+        module = self._dynamic_import(module_name)
+        self.active_modules[module_name] = module
+        return module
+                </div>
+                
+                <h3>Core ML 加速处理</h3>
+                <div class="code-block">
+# 将OpenCV处理逻辑转换为Core ML模型
+import coremltools as ct
+
+def convert_to_coreml(opencv_model_path):
+    model = ct.converters.keras.convert(
+        opencv_model_path,
+        input_names=['image'],
+        output_names=['output']
+    )
+    model.save('VideoProcessor.mlmodel')
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>完整工作流程</h2>
+                
+                <div class="feature-card">
+                    <h3>文案与音频生成</h3>
+                    <ul>
+                        <li>多模型并行调用生成文案</li>
+                        <li>本地Qwen2-1.5B-Instruct模型进行文案评分与推荐</li>
+                        <li>支持本地上传音频文件</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>视频处理与二创</h3>
+                    <ul>
+                        <li>抖音及小红书分享链接直接下载视频素材</li>
+                        <li>AI视频分析（语义匹配、情感分析）</li>
+                        <li>智能横屏转竖屏与核心焦点追踪功能</li>
+                        <li>基于音频节奏的智能剪辑与特效自动匹配</li>
+                        <li>丰富的视觉效果库</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>导出与精修</h3>
+                    <ul>
+                        <li>AI智能封面与高光时刻自动生成</li>
+                        <li>导出3个最终MP4视频版本供A/B测试使用</li>
+                        <li>导出剪映草稿文件(.draft)</li>
+                        <li>可配置的字幕生成功能</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>新增功能需求</h2>
+                
+                <h3>1. 抖音水印去除优化</h3>
+                <ul>
+                    <li>分析Coze插件无水印下载机制</li>
+                    <li>实现类似无水印下载方案</li>
+                    <li>集成到视频下载流程中</li>
+                </ul>
+                
+                <h3>2. Core ML 加速处理</h3>
+                <ul>
+                    <li>将去字幕、滤镜渲染、特效叠加迁移至Core ML框架</li>
+                    <li>通过coremltools转换OpenCV处理逻辑</li>
+                    <li>直接调用NPU实现硬件级加速</li>
+                </ul>
+                
+                <h3>3. 视觉效果增强</h3>
+                <ul>
+                    <li>增加高饱和度滤镜预设包</li>
+                    <li>大字体字幕预设包</li>
+                    <li>色彩对比度增强算法</li>
+                    <li>优化画面清晰度</li>
+                </ul>
+                
+                <h3>4. 背景音乐系统升级</h3>
+                <ul>
+                    <li>一键匹配中老年热门BGM功能</li>
+                    <li>背景音乐库扩充至50首</li>
+                    <li>智能推荐算法优化</li>
+                </ul>
+                
+                <h3>5. 数据反馈与优化闭环</h3>
+                <div class="data-panel">
+                    <h4>数据追踪指标</h4>
+                    <table class="data-table">
+                        <tr>
+                            <th>数据类型</th>
+                            <th>具体参数</th>
+                            <th>用途</th>
+                        </tr>
+                        <tr>
+                            <td>平台回流数据</td>
+                            <td>播放量、完播率、点赞率、评论率、转发率、链接点击率</td>
+                            <td>视频效果评估</td>
+                        </tr>
+                        <tr>
+                            <td>内部过程数据</td>
+                            <td>文案ID、特效组合、BGM ID、目标人群标签</td>
+                            <td>创作因素分析</td>
+                        </tr>
+                    </table>
+                    
+                    <h4>数据录入机制</h4>
+                    <ul>
+                        <li>所有数据字段均为非必填</li>
+                        <li>建议填写视频发布后3天的数据</li>
+                        <li>提供比率计算功能（如输入点赞数和播放量自动计算点赞率）</li>
+                    </ul>
+                    
+                    <h4>数据分析看板</h4>
+                    <ul>
+                        <li>项目总览仪表盘：显示核心指标平均值和趋势</li>
+                        <li>单视频分析详情页：展示数据与创作元素关联</li>
+                        <li>相关性分析看板：分析文案/特效/BGM与效果的关系</li>
+                    </ul>
+                    
+                    <h4>优化反馈机制</h4>
+                    <ul>
+                        <li>文案生成优化：基于高点击率文案动态调整提示词</li>
+                        <li>特效组合推荐：优先推荐数据验证过的高转化率组合</li>
+                        <li>BGM智能匹配：根据文案情感和历史数据推荐最佳BGM</li>
+                        <li>A/B测试分析：对比已发布和未发布版本的表现差异</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>技术实现方案</h2>
+                
+                <h3>环境配置与依赖</h3>
+                <div class="code-block">
+# 核心依赖
+python==3.9.13
+pyqt6==6.6.1
+moviepy==1.0.3
+opencv-python==4.9.0.80
+paddlepaddle==2.5.0
+paddleocr==2.7.0
+vidgear==0.2.5
+requests==2.31.0
+yt-dlp==2023.11.16
+numpy==1.24.3
+concurrent.futures
+transformers==4.37.0
+qianfan==0.3.0
+ffmpeg-python==0.2.0
+qwen2==1.5b-instruct
+librosa==0.10.1
+sqlite3==3.37.0
+
+# M4芯片优化依赖
+apple-accelerate==1.0.0
+metal-performance-shaders==1.0.0
+coremltools==7.0.0
+
+# FastVLM集成依赖
+fastvlm==1.0.0
+                </div>
+                
+                <h3>数据反馈闭环实现</h3>
+                <div class="code-block">
+# 数据结构设计
+class PerformanceData:
+    def __init__(self):
+        self.conn = sqlite3.connect('performance_data.db')
+        self.create_tables()
+    
+    def create_tables(self):
+        # 创建视频数据表
+        self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS video_performance (
+                video_id TEXT PRIMARY KEY,
+                publish_date TEXT,
+                views INTEGER,
+                completion_rate REAL,
+                likes INTEGER,
+                comments INTEGER,
+                shares INTEGER,
+                click_rate REAL,
+                product_category TEXT
+            )
+        ''')
+        
+        # 创建创作元素表
+        self.conn.execute('''
+            CREATE TABLE IF NOT EXISTS creative_elements (
+                video_id TEXT,
+                copywriting_id TEXT,
+                effect_combo_id TEXT,
+                bgm_id TEXT,
+                subtitle_style TEXT,
+                target_audience TEXT,
+                FOREIGN KEY (video_id) REFERENCES video_performance (video_id)
+            )
+        ''')
+        
+        self.conn.commit()
+
+# 数据分析器
+class DataAnalyzer:
+    def get_top_performing_copywriting(self, product_category):
+        """获取某类产品的高效文案"""
+        query = """
+            SELECT cp.copywriting_id, cp.content, AVG(vp.click_rate) as avg_click_rate
+            FROM creative_elements ce
+            JOIN video_performance vp ON ce.video_id = vp.video_id
+            JOIN copywriting_pool cp ON ce.copywriting_id = cp.copywriting_id
+            WHERE vp.product_category = ?
+            GROUP BY cp.copywriting_id
+            ORDER BY avg_click_rate DESC
+            LIMIT 5
+        """
+        return self.conn.execute(query, (product_category,)).fetchall()
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>UI界面设计</h2>
+                
+                <h3>设计理念</h3>
+                <p>采用苹果公司软玻璃渐变风格，以Google logo颜色（蓝、绿、黄、红）为渐变主色调。</p>
+                
+                <h3>界面布局要求</h3>
+                <ul>
+                    <li>左侧导航栏：首页、使用说明、模板库、素材库、大模型库、数据看板</li>
+                    <li>中央工作区：文案及音频生成、视频编辑预览区域</li>
+                    <li>右侧控制面板：效果预设、参数调整、导出选项</li>
+                    <li>底部状态栏：处理进度、系统状态、提示信息</li>
+                </ul>
+                
+                <h3>数据看板设计</h3>
+                <ul>
+                    <li>项目总览：核心指标卡片和趋势图表</li>
+                    <li>单视频分析：数据面板与内容回放区联动</li>
+                    <li>相关性分析：文案/特效/BGM效果矩阵图</li>
+                    <li>数据录入：简洁表单支持非必填数据录入</li>
+                </ul>
+            </div>
+            
+            <div class="section">
+                <h2>部署与打包</h2>
+                
+                <h3>环境要求</h3>
+                <ul>
+                    <li>macOS 13.0+ (Ventura)</li>
+                    <li>Mac mini with M4 chip</li>
+                    <li>16GB+ 统一内存</li>
+                    <li>Python 3.9+</li>
+                    <li>FFmpeg with Metal acceleration</li>
+                </ul>
+                
+                <h3>安装步骤</h3>
+                <div class="code-block">
+# 1. 创建虚拟环境
+python3 -m venv moneyhitter-env
+source moneyhitter-env/bin/activate
+
+# 2. 安装依赖
+pip install -r requirements.txt
+
+# 3. 安装FFmpeg with Metal支持
+brew install ffmpeg --with-videotoolbox
+
+# 4. 下载本地模型
+python -c "from transformers import AutoModel; AutoModel.from_pretrained('Qwen/Qwen2-1.5B-Instruct')"
+
+# 5. 初始化数据库
+python -c "
+from core.data_feedback import PerformanceData
+db = PerformanceData()
+print('数据库初始化完成')
+"
+
+# 6. 运行应用
+python run.py
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2024 MoneyHitter 开发指南 | 专为中老年女性短视频二创带货优化</p>
+        </footer>
+    </div>
+</body>
+</html>
